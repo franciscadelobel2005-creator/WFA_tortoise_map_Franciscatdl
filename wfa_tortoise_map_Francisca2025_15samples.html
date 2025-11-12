@@ -1,0 +1,99 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>WFA Tortoise Research Samples</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+ integrity="sha256-sA+e2Xx0L6J3v3xS7gy0+VZogHq1k0IYB6U0xC6ikHg=" crossorigin=""/>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+<style>
+html, body, #map { height: 100%; margin:0; padding:0; }
+.location-label { 
+  font-weight:bold; 
+  font-size:12px; 
+  color:black; 
+  text-shadow: 1px 1px 2px white;
+  background: rgba(255,255,255,0.5);
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+</style>
+</head>
+<body>
+<div id="map"></div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+ integrity="sha256-o9N1jaf/73C4wO7wY/2c/ak8aLJ2HBhIwt6p8vI1tqo=" crossorigin=""></script>
+
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+<script>
+const samples = [
+  {id:3,species:"Angulate tortoise",collector:"Tristan Daniels",location:"Pelican Park",date:"Unknown",lat:-34.081944,lon:18.537778,in_at:"",uct:"25117",container:"1PP25_01"},
+  {id:4,species:"Angulate tortoise",collector:"Tristan Daniels",location:"Pelican Park",date:"Unknown",lat:-34.081944,lon:18.537778,in_at:"",uct:"25118",container:"2PP25_02"},
+  {id:6,species:"Angulate tortoise",collector:"Dalton Gibbs",location:"Rietvlei, Table Bay Nature Reserve",date:"18-12-2024",lat:-33.84579,lon:18.50039,in_at:"",uct:"25119",container:"3TB25_01"},
+  {id:11,species:"Angulate tortoise",collector:"Jacques van der Merwe",location:"Joostenberg Kloof",date:"28-11-2024",lat:-33.9110,lon:18.5510,in_at:"253491312",uct:"25120",container:"4JK25_01"},
+  {id:12,species:"Angulate tortoise",collector:"Unknown",location:"Blaauwberg Nature Reserve",date:"17-03-2025",lat:-33.75276,lon:18.47155,in_at:"",uct:"25121",container:"5BB25_01"},
+  {id:13,species:"Angulate tortoise",collector:"James Morton",location:"Pelican Park",date:"Unknown",lat:-34.077156,lon:18.537649,in_at:"",uct:"25122",container:"6PP25_03"},
+  {id:15,species:"Angulate tortoise?",collector:"Dalton Gibbs",location:"Unknown",date:"01-04-2025",lat:-33.788772,lon:18.515610,in_at:"",uct:"25123",container:"7UN25_01"},
+  {id:18,species:"Angulate tortoise?",collector:"Dalton Gibbs",location:"Unknown",date:"01-04-2025",lat:-33.788772,lon:18.515610,in_at:"",uct:"25124",container:"8UN25_01"},
+  {id:19,species:"Angulate tortoise?",collector:"Dalton Gibbs",location:"Unknown",date:"01-04-2025",lat:-33.788819,lon:18.534584,in_at:"",uct:"25125",container:"9UN25_01"},
+  {id:20,species:"Angulate tortoise?",collector:"Unknown",location:"Buffelsfontein Nature Reserve",date:"Unknown",lat:-33.265246,lon:18.221179,in_at:"",uct:"25126",container:"10BF25_01"},
+  {id:21,species:"Angulate tortoise?",collector:"Unknown",location:"Buffelsfontein Nature Reserve",date:"Unknown",lat:-33.265300,lon:18.221220,in_at:"",uct:"25127",container:"11BF25_02"},
+  {id:22,species:"Angulate tortoise?",collector:"Unknown",location:"Buffelsfontein Nature Reserve",date:"Unknown",lat:-33.265180,lon:18.221250,in_at:"",uct:"25128",container:"12BF25_03"},
+  {id:23,species:"Angulate tortoise?",collector:"Unknown",location:"Buffelsfontein Nature Reserve",date:"Unknown",lat:-33.265260,lon:18.221100,in_at:"",uct:"25129",container:"13BF25_04"},
+  {id:24,species:"Angulate tortoise?",collector:"Unknown",location:"Buffelsfontein Nature Reserve",date:"Unknown",lat:-33.265300,lon:18.221180,in_at:"",uct:"25130",container:"14BF25_05"},
+  {id:25,species:"Angulate tortoise?",collector:"Unknown",location:"Buffelsfontein Nature Reserve",date:"Unknown",lat:-33.265200,lon:18.221150,in_at:"",uct:"25131",container:"15BF25_06"}
+];
+
+const map = L.map('map').setView([-33.9,18.4], 9);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const markers = L.markerClusterGroup();
+
+samples.forEach(s => {
+  let popupContent = `<strong>Sample #${s.id}</strong><br>` +
+                     `<em>Species:</em> ${s.species}<br>` +
+                     `<em>Collector:</em> ${s.collector}<br>` +
+                     `<em>Location:</em> ${s.location}<br>` +
+                     `<em>Date:</em> ${s.date}<br>` +
+                     `<em>Latitude:</em> ${s.lat.toFixed(6)}°<br>` +
+                     `<em>Longitude:</em> ${s.lon.toFixed(6)}°<br>` +
+                     `<em>UCT Code:</em> ${s.uct}<br>` +
+                     `<em>Container:</em> ${s.container}`;
+  if(s.in_at) popupContent += `<br><em>INAT:</em> ${s.in_at}`;
+  const marker = L.marker([s.lat, s.lon]).bindPopup(popupContent);
+  markers.addLayer(marker);
+});
+
+map.addLayer(markers);
+
+const locations = [
+  {name:"Pelican Park", lat:-34.081944, lon:18.537778, offset:[0,-40]},
+  {name:"Joostenberg Kloof", lat:-33.9110, lon:18.5510, offset:[0,-40]},
+  {name:"Blaauwberg Nature Reserve", lat:-33.75276, lon:18.47155, offset:[0,-40]},
+  {name:"Rietvlei, Table Bay Nature Reserve", lat:-33.84579, lon:18.50039, offset:[0,-40]},
+  {name:"Buffelsfontein Nature Reserve", lat:-33.265246, lon:18.221179, offset:[0,-40]}
+];
+
+locations.forEach(loc => {
+  const labelIcon = L.divIcon({
+    className: 'location-label',
+    html: loc.name,
+    iconSize:[100,20],
+    iconAnchor: loc.offset
+  });
+  L.marker([loc.lat, loc.lon], {icon: labelIcon, interactive:false}).addTo(map);
+});
+</script>
+</body>
+</html>
